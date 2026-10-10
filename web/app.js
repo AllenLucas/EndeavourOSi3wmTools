@@ -1,31 +1,7 @@
 const $ = (id) => document.getElementById(id);
 const state = { system: null, displays: [], draft: [], pending: null, timer: null };
 
-const nativeInvoke = window.__TAURI__?.core?.invoke;
-
 async function api(path, options = {}) {
-  if (nativeInvoke) {
-    const commands = {
-      '/api/system/status': 'system_status',
-      '/api/displays': 'displays',
-      '/api/displays/validate': 'validate_displays',
-      '/api/displays/apply': 'apply_displays',
-      '/api/displays/confirm': 'confirm_displays',
-      '/api/displays/revert': 'revert_displays',
-      '/api/wallpaper/set': 'wallpaper_set',
-      '/api/wallpaper/select': 'wallpaper_select',
-      '/api/wallpaper/search': 'wallpaper_search',
-    };
-    const command = commands[path];
-    if (!command) throw new Error(`未知桌面命令：${path}`);
-    const body = options.body ? JSON.parse(options.body) : null;
-    try {
-      return await nativeInvoke(command, body ? { request: body } : {});
-    } catch (error) {
-      throw new Error(typeof error === 'string' ? error : error?.message || '桌面命令执行失败');
-    }
-  }
-
   const response = await fetch(path, {
     cache: 'no-store',
     headers: options.body ? { 'Content-Type': 'application/json' } : {},
@@ -384,6 +360,11 @@ function route() {
 
 document.querySelectorAll('[data-route]').forEach((link) => link.addEventListener('click', () => { if (link.getAttribute('href')) return; location.hash = link.dataset.route; }));
 window.addEventListener('hashchange', route);
+window.addEventListener('pagehide', () => {
+  if (!state.pending) return;
+  const body = new Blob([JSON.stringify(state.pending)], { type: 'application/json' });
+  navigator.sendBeacon('/api/displays/revert', body);
+});
 $('refresh')?.addEventListener('click', load);
 $('reset')?.addEventListener('click', () => { state.draft = draftFromDisplays(state.displays); render(); });
 $('autoArrange').addEventListener('click', autoArrange);

@@ -17,7 +17,7 @@ use axum::{
     routing::{get, post},
 };
 use tower_http::trace::TraceLayer;
-use tracing::info;
+use tracing::{error, info};
 use tracing_subscriber::EnvFilter;
 
 const INDEX_HTML: &str = include_str!("../web/index.html");
@@ -49,6 +49,7 @@ async fn main() {
     let address = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), port);
     let url = format!("http://{address}");
     let state = AppState::new();
+    let shutdown_state = state.clone();
     let app = Router::new()
         .route("/", get(index))
         .route("/app.js", get(javascript))
@@ -95,7 +96,33 @@ async fn main() {
             }
         });
     }
-    axum::serve(listener, app).await.expect("HTTP 服务意外退出");
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal(shutdown_state))
+        .await
+        .expect("HTTP 服务意外退出");
+}
+
+async fn shutdown_signal(state: AppState) {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c().await.expect("无法监听 Ctrl+C 信号");
+    };
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("无法监听终止信号")
+            .recv()
+            .await;
+    };
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        () = ctrl_c => {},
+        () = terminate => {},
+    }
+    if let Err(error) = state.revert_pending_on_shutdown().await {
+        error!(%error, "failed to revert pending display configuration while stopping");
+    }
 }
 
 fn open_url(url: &str) -> io::Result<()> {

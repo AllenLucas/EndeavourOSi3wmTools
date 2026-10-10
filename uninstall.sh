@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+pkill -x arch-tools 2>/dev/null || true
+
 rm -f \
   "${HOME}/.local/bin/arch-tools" \
   "${HOME}/.local/share/applications/arch-tools.desktop" \

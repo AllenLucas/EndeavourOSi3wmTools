@@ -71,7 +71,7 @@ impl AppState {
         }
     }
 
-    /// Restore an unconfirmed layout before the desktop process exits.
+    /// Restore an unconfirmed layout before the Rust service exits.
     pub async fn revert_pending_on_shutdown(&self) -> Result<bool, AppError> {
         let _operation = self.operation.lock().await;
         let previous = self
