@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Arch Tools
+Name[zh_CN]=Arch 工具箱
+Comment=Manage displays and wallpapers on Arch Linux
+Comment[zh_CN]=管理 Arch Linux 显示器与壁纸
+Exec=arch-tools
+Icon=arch-tools
+Terminal=false
+Categories=Settings;System;
+Keywords=arch;tools;display;monitor;wallpaper;xrandr;
+StartupNotify=true
+SingleMainWindow=true

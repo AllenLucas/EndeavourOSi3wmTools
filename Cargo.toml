@@ -1,0 +1,15 @@
+[package]
+name = "arch-tools"
+version = "0.2.0"
+edition = "2024"
+description = "Display and wallpaper management for Arch Linux"
+license = "MIT"
+
+[dependencies]
+axum = "0.8"
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+tokio = { version = "1", features = ["fs", "macros", "net", "process", "rt-multi-thread", "sync", "time"] }
+tower-http = { version = "0.6", features = ["trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }

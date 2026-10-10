@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Arch Tools</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" data-route="home"><span class="brand-mark">A</span><span><b>Arch Tools</b><small>显示与壁纸工具</small></span></a>
+    <nav><a href="#home" data-route="home">工具首页</a><a href="#display" data-route="display">投屏管理</a><a href="#wallpaper" data-route="wallpaper">壁纸管理</a></nav>
+  </header>
+
+  <main>
+    <section id="view-home" class="view">
+      <div class="page-heading"><p class="eyebrow">ARCH LINUX · DISPLAY TOOLS</p><h1>桌面工具</h1><p class="subtitle">管理这台 Arch Linux 工作站的显示器与壁纸。</p></div>
+      <section class="tool-grid">
+        <a class="tool-card display-tool" href="#display"><div class="tool-icon">▣</div><div class="tool-copy"><span class="tool-kicker">01 · DISPLAY</span><h2>投屏管理</h2><p>查看并调整 X11 多显示器布局、分辨率与旋转。</p></div><span class="arrow">→</span></a>
+        <a class="tool-card wallpaper-tool" href="#wallpaper"><div class="tool-icon">▧</div><div class="tool-copy"><span class="tool-kicker">02 · DESKTOP</span><h2>壁纸管理</h2><p>使用本地图片设置桌面壁纸，并保存到 i3 启动配置。</p></div><span class="arrow">→</span></a>
+      </section>
+      <section class="home-note"><span class="dot"></span><span>所有操作仅作用于本机；浏览器调试接口只监听回环地址。</span></section>
+    </section>
+
+    <section id="view-display" class="view hidden">
+      <div class="page-heading compact"><button class="back-link" data-route="home">← 工具首页</button><div class="heading-row"><div><p class="eyebrow">01 · DISPLAY</p><h1>投屏管理</h1><p class="subtitle">安全地查看、排列和配置本机显示器</p></div><button id="refresh" class="secondary">重新检测</button></div></div>
+      <section id="status" class="status loading">正在连接本地服务…</section>
+      <section class="panel"><div class="section-title"><div><span>01</span><h2>布局预览</h2></div><button id="autoArrange" class="secondary" disabled>水平自动排列</button></div><div id="canvas" class="canvas"><p>正在读取显示器…</p></div><p class="hint">拖动显示器矩形调整位置，靠近其他显示器边缘时会自动吸附；相同坐标表示镜像或重叠。</p></section>
+      <section class="panel"><div class="section-title"><div><span>02</span><h2>显示器配置</h2></div></div><div id="displayList" class="display-list"></div></section>
+      <section class="actions panel"><div><strong id="dirtyText">尚无修改</strong><p>应用后需要在 15 秒内确认，否则自动恢复。</p></div><div class="action-buttons"><button id="reset" class="secondary" disabled>撤销修改</button><button id="validate" class="secondary" disabled>验证配置</button><button id="apply" class="primary" disabled>应用配置</button></div></section>
+    </section>
+
+    <section id="view-wallpaper" class="view hidden">
+      <div class="page-heading compact"><button class="back-link" data-route="home">← 工具首页</button><div class="heading-row"><div><p class="eyebrow">02 · DESKTOP</p><h1>壁纸管理</h1><p class="subtitle">使用 feh 设置 X11 桌面壁纸</p></div></div></div>
+      <section class="panel wallpaper-panel"><div class="section-title"><div><span>01</span><h2>设置本地壁纸</h2></div></div><div class="wallpaper-picker"><div class="wallpaper-form"><label class="input-label" for="wallpaperPath">图片路径</label><div class="path-row"><input id="wallpaperPath" class="path-input" type="text" placeholder="点击选择图片，或输入完整路径" autocomplete="off"><button id="wallpaperSelect" class="secondary">▣ 选择图片</button></div><div class="wallpaper-options"><label class="input-label" for="wallpaperMode">显示方式<select id="wallpaperMode"><option value="fill">填充并保持比例</option><option value="scale">拉伸铺满</option><option value="max">最大化但不裁剪</option><option value="center">居中</option><option value="tile">平铺</option></select></label><label class="toggle wallpaper-persist"><input id="wallpaperPersist" type="checkbox" checked>登录时自动恢复此壁纸</label></div><button id="wallpaperSet" class="primary">✓ 设置壁纸</button></div><div class="wallpaper-preview"><span>图片预览</span><img id="wallpaperPreview" class="hidden" alt="所选壁纸预览"><p id="wallpaperPreviewEmpty">尚未选择图片</p></div></div><p class="hint">支持 JPG、PNG 等 feh 可读取的图片格式。保存选项会更新当前 i3 配置中的壁纸启动项。</p></section>
+      <section class="panel wallpaper-search-panel"><div class="section-title"><div><span>02</span><h2>获取新壁纸</h2></div></div><p class="panel-description">在 Pexels 查找高清图片，下载后通过上方选择按钮载入。</p><button id="wallpaperSearchSecondary" class="secondary">↗ 打开 Pexels 壁纸库</button></section>
+    </section>
+  </main>
+
+  <div id="confirmBar" class="confirm-bar hidden" role="dialog" aria-live="assertive"><div><strong>是否保留当前显示设置？</strong><p><span id="countdown">15</span> 秒后自动恢复</p></div><div><button id="revert" class="danger">立即恢复</button><button id="confirm" class="primary">保留设置</button></div></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
